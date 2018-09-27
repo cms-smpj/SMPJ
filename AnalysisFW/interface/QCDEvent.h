@@ -43,6 +43,7 @@ class QCDEvent
 
       void setGenFlavour(const std::vector<float> GenFlavour){ genFlavour_= GenFlavour; }
       void setGenHadronFlavour(const std::vector<float> GenFlavourHadron){ genFlavourHadron_= GenFlavourHadron; }
+      void setGenFlavourPhysicsDef(const std::vector<float> GenPartonFlavourPhysicsDef){ genFlavourPartonPhysicsDef_= GenPartonFlavourPhysicsDef; }
 
       //------------ Get methods -------------------------------
       unsigned int nTriggers()                         const {return TriggerDecision_.size();}
@@ -63,6 +64,7 @@ class QCDEvent
 
       float GenJetFlavour(int i)                       const {return genFlavour_[i];}
       float GenHadronJetFlavour(int i)                       const {return genFlavourHadron_[i];}
+      float GenPartonPhysicsDefJetFlavour(int i)                       const {return genFlavourPartonPhysicsDef_[i];}
 
       float calomjj();
       float genmjj();
@@ -128,6 +130,7 @@ class QCDEvent
       //std::vector<QCDJet>                      FatJets_;
       std::vector<float>  genFlavour_;
       std::vector<float>  genFlavourHadron_;
+      std::vector<float>  genFlavourPartonPhysicsDef_;
 
       //MyMuons
       //std::vector<MyMuon> mMuon_;

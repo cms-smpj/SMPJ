@@ -62,7 +62,7 @@ class ProcessedTreeProducerBTag : public edm::EDAnalyzer
     bool   isPFJecUncSetCHS_;
     int    mGoodVtxNdof,mMinNPFJets;
     double mGoodVtxZ;
-    double mMinPFPt,mMinPFFatPt,mMaxPFFatEta,mMinGenPt,mMaxY,mMinJJMass;
+    double mMinPFPt,mMinPFFatPt,mMaxPFFatEta,mMinGenPt,mMaxY,mMinJJMass, mMinPFPtThirdJet;
     std::string mPFJECservice;
     std::string mPFPayloadName;
     std::string mPFPayloadNameCHS;
@@ -109,6 +109,7 @@ class ProcessedTreeProducerBTag : public edm::EDAnalyzer
     edm::Handle<trigger::TriggerEvent> triggerEventHandle_;
     //hadron jet definition
     edm::EDGetTokenT<reco::JetFlavourInfoMatchingCollection> jetFlavourInfosToken_;
+    edm::EDGetTokenT<reco::JetFlavourInfoMatchingCollection> jetFlavourInfosTokenPhysicsDef_;
 
     HLTConfigProvider hltConfig_;
     //---- CORRECTORS ----------------------

@@ -44,7 +44,7 @@ class QCDPFJetBTag : public QCDJet {
          DeepCSVccP_ = DeepCSVccP;}
 
 
-     void setFlavour(float fpartonflavour, float fhadronflavour) {partonFlavour_ = fpartonflavour; hadronFlavour_ = fhadronflavour;}
+     void setFlavour(float fpartonflavour, float fhadronflavour, float fpartonflavourPhysicsDef) {partonFlavour_ = fpartonflavour; hadronFlavour_ = fhadronflavour; partonFlavourPhysicsDef_ = fpartonflavourPhysicsDef;}
 
      void setQGTagger(float fQGTagger) {QGtagger_ = fQGTagger;}
 
@@ -77,6 +77,7 @@ class QCDPFJetBTag : public QCDJet {
      float pfBoostedDouble()  const {return boosted_;} 
 
      float partonflavour()      const {return partonFlavour_;}
+     float partonflavourPhysicsDef()      const {return partonFlavourPhysicsDef_;}
      float hadronflavour()      const {return hadronFlavour_;}
 
      float qgtagger()      const {return QGtagger_;}
@@ -115,6 +116,7 @@ class QCDPFJetBTag : public QCDJet {
      float QGtagger_;
 
      float partonFlavour_;
+     float partonFlavourPhysicsDef_;
      float hadronFlavour_;
      float recommend1_;
      float recommend2_;

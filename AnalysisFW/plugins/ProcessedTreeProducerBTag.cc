@@ -84,6 +84,7 @@ ProcessedTreeProducerBTag::ProcessedTreeProducerBTag(edm::ParameterSet const& cf
   mGoodVtxNdof       = cfg.getParameter<double>                    ("goodVtxNdof");
   mGoodVtxZ          = cfg.getParameter<double>                    ("goodVtxZ");
   mMinPFPt           = cfg.getParameter<double>                    ("minPFPt");
+  mMinPFPtThirdJet   = cfg.getParameter<double>                    ("minPFPtThirdJet");
   mMinJJMass         = cfg.getParameter<double>                    ("minJJMass");
   mMaxY              = cfg.getParameter<double>                    ("maxY");
   mMinNPFJets        = cfg.getParameter<int>                       ("minNPFJets");
@@ -92,7 +93,7 @@ ProcessedTreeProducerBTag::ProcessedTreeProducerBTag(edm::ParameterSet const& cf
   mIsMCarlo          = cfg.getUntrackedParameter<bool>             ("isMCarlo",false);
   mAK4          = cfg.getUntrackedParameter<bool>             ("AK4",false);
   mUseGenInfo        = cfg.getUntrackedParameter<bool>             ("useGenInfo",false);
-  mMinGenPt          = cfg.getUntrackedParameter<double>           ("minGenPt",30);
+  mMinGenPt          = cfg.getUntrackedParameter<double>           ("minGenPt",20);
   processName_       = cfg.getParameter<std::string>               ("processName");
   triggerNames_      = cfg.getParameter<std::vector<std::string> > ("triggerName");
   //mPFJECUncSrc       = cfg.getParameter<std::string>               ("jecUncSrc");
@@ -104,6 +105,7 @@ ProcessedTreeProducerBTag::ProcessedTreeProducerBTag(edm::ParameterSet const& cf
   mgenParticles = consumes<reco::GenParticleCollection>(cfg.getParameter<edm::InputTag>("GenParticles"));
   qgToken = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
   jetFlavourInfosToken_ = consumes<reco::JetFlavourInfoMatchingCollection>( cfg.getParameter<edm::InputTag>("jetFlavourInfos"));
+  jetFlavourInfosTokenPhysicsDef_ = consumes<reco::JetFlavourInfoMatchingCollection>( cfg.getParameter<edm::InputTag>("jetFlavourInfosPhysicsDef"));
   //mPFJetsName        = cfg.getParameter<edm::InputTag>             ("pfjets");
   //mPFJetsNameCHS     = cfg.getParameter<edm::InputTag>             ("pfjetschs");
   //mSrcPU = cfg.getUntrackedParameter<edm::InputTag> ("srcPU",edm::InputTag("addPileupInfo"));
@@ -168,6 +170,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
   vector<QCDPFJet>      mPFJetsCHS;
   vector<LorentzVector> mGenJets;
   vector<float> GenFlavour;
+  vector<float> GenPartonFlavourPhysicsDef;
   vector<float> GenHadronFlavour;
   QCDEventHdr mEvtHdr;
   QCDMET mPFMet;
@@ -429,6 +432,20 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
       
       //const reco::Jet *aJet = (*j).first.get();
       reco::JetFlavourInfo aInfo = (*j).second;
+      int FlavourGenHadron = aInfo.getHadronFlavour();
+      //if(FlavourGenHadron==5) cout<<FlavourGenHadron<<" "<<aJet->pt()<<" "<<aJet->eta()<<" "<<aJet->phi()<<" HADRONFLAV"<<endl;
+      GenHadronFlavour.push_back(FlavourGenHadron);
+    }
+
+    //Physics Definition Gen Level
+    edm::Handle<reco::JetFlavourInfoMatchingCollection> theJetFlavourInfosPhysicsDef;
+    event.getByToken(jetFlavourInfosTokenPhysicsDef_, theJetFlavourInfosPhysicsDef );
+    
+    for ( reco::JetFlavourInfoMatchingCollection::const_iterator j  = theJetFlavourInfosPhysicsDef->begin();j != theJetFlavourInfosPhysicsDef->end();++j ) {
+      //std::cout << "-------------------- Jet Flavour Info --------------------" << std::endl;
+      
+      //const reco::Jet *aJet = (*j).first.get();
+      reco::JetFlavourInfo aInfo = (*j).second;
       //std::cout << std::setprecision(2) << std::setw(6) << std::fixed
       //<< "[printJetFlavourInfo] Jet " << (j - theJetFlavourInfos->begin()) << " pt, eta, rapidity, phi = " << aJet->pt() << ", "
       //<< aJet->eta() << ", "
@@ -438,9 +455,9 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
       // ----------------------- Hadrons -------------------------------
       //std::cout << " Hadron-based flavour: " << aInfo.getHadronFlavour() << std::endl;
       
-      int FlavourGenHadron = aInfo.getHadronFlavour();
+      int FlavourGenHadronPhysicsDef = aInfo.getPartonFlavour();
       //if(FlavourGenHadron==5) cout<<FlavourGenHadron<<" "<<aJet->pt()<<" "<<aJet->eta()<<" "<<aJet->phi()<<" HADRONFLAV"<<endl;
-      GenHadronFlavour.push_back(FlavourGenHadron);
+      GenPartonFlavourPhysicsDef.push_back(FlavourGenHadronPhysicsDef);
     }
   }
   
@@ -682,7 +699,9 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
     
     cout<<qgLikelihood<<endl;
     }*/
-    
+
+  int NumbJets=0;
+  
   for(edm::View<pat::Jet>::const_iterator i_pfjetchs=patjetschs->begin(); i_pfjetchs!=patjetschs->end(); ++i_pfjetchs)
      {
        QCDPFJet qcdpfjetchs;
@@ -886,22 +905,22 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
 	 double pfCombinedMVAV2BJetTags=i_pfjetchs->bDiscriminator("pfCombinedMVAV2BJetTags");
 
 	 float partonFlavour=-100;
+	 float partonFlavourPhysicsDef=-100;
 	 float hadronFlavour=-100;
 	 
 	 if (mIsMCarlo && mUseGenInfo) {
 	   partonFlavour = i_pfjetchs->partonFlavour();
 	   hadronFlavour = i_pfjetchs->hadronFlavour();
+	   if(i_pfjetchs->genParton() != NULL) partonFlavourPhysicsDef = i_pfjetchs->genParton()->pdgId(); //it is not always defined!!
 	 }
 	 
-	 qcdpfjetchs.setFlavour(partonFlavour,hadronFlavour);
+	 qcdpfjetchs.setFlavour(partonFlavour,hadronFlavour,partonFlavourPhysicsDef);
 
 	 float QGTagger=-100;
 
 	 if(mAK4){
 	   QGTagger = i_pfjetchs->userFloat("QGTaggerAK4PFCHS:qgLikelihood");
 	 }
-     
-
 
 	 //Filling B-tag infos
 	 //qcdpfjetchs.setTCHETag(TCHE,TCHP,TCHEpf,TCHPpf);
@@ -910,13 +929,13 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
 	 //qcdpfjetchs.setCombinedSecondaryVertexTag(CSV,CSVpf,CinclSVpf,CSVSoftLeptonpf,CMVApf);
 	 qcdpfjetchs.setPositiveNegativeCSV(CSVpfPositive,CSVpfNegative);
 	 qcdpfjetchs.setTagRecommended(pfJetProbabilityBJetTags,pfCombinedInclusiveSecondaryVertexV2BJetTags,pfCombinedMVAV2BJetTags);
-     qcdpfjetchs.setDeepCSV(DeepCSVb, DeepCSVc, DeepCSVl, DeepCSVbb, DeepCSVcc,
-             DeepCSVbN, DeepCSVcN, DeepCSVlN, DeepCSVbbN, DeepCSVccN,
-             DeepCSVbP, DeepCSVcP, DeepCSVlP, DeepCSVbbP, DeepCSVccP);
-
+	 qcdpfjetchs.setDeepCSV(DeepCSVb, DeepCSVc, DeepCSVl, DeepCSVbb, DeepCSVcc,
+				DeepCSVbN, DeepCSVcN, DeepCSVlN, DeepCSVbbN, DeepCSVccN,
+				DeepCSVbP, DeepCSVcP, DeepCSVlP, DeepCSVbbP, DeepCSVccP);
+	 
 	 qcdpfjetchs.setQGTagger(QGTagger);	 
-     qcdpfjetchs.setBoosted(pfBoostedDoubleSecondaryVertex);
-     qcdpfjetchs.setCTagger(pfCombinedCvsL,pfCombinedCvsB);
+	 qcdpfjetchs.setBoosted(pfBoostedDoubleSecondaryVertex);
+	 qcdpfjetchs.setCTagger(pfCombinedCvsL,pfCombinedCvsB);
 
 	 float pileupJetId = -999;
 	 if ( i_pfjetchs->hasUserFloat(pfchsjetpuid) )   {  pileupJetId = i_pfjetchs->userFloat(pfchsjetpuid);}
@@ -943,9 +962,13 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
 	   LorentzVector tmpP4(0.0,0.0,0.0,0.0);
 	   qcdpfjetchs.setGen(tmpP4,0);
 	 }
-	 if (qcdpfjetchs.pt() >= mMinPFPt)
+       
+	 NumbJets++;
+	 if (NumbJets<=3 && qcdpfjetchs.pt() >= mMinPFPtThirdJet)
 	   mPFJetsCHS.push_back(qcdpfjetchs);
-	 
+
+	 if (NumbJets>3 && qcdpfjetchs.pt() >= mMinPFPt)
+	   mPFJetsCHS.push_back(qcdpfjetchs);
 
        } // if(i_pfjetchs->isPFJet() )
      } // for(edm::View<pat::Jet>::const_iterator i_pfjetchs=patjetschs->begin(); i_pfjetchs!=patjetschs->end(); ++i_pfjetchs)
@@ -965,6 +988,7 @@ void ProcessedTreeProducerBTag::analyze(edm::Event const& event, edm::EventSetup
   mEvent->setPFJetsCHS(mPFJetsCHS); // -- later substitute chs jets
   mEvent->setGenJets(mGenJets);
   mEvent->setGenFlavour(GenFlavour);
+  mEvent->setGenFlavourPhysicsDef(GenPartonFlavourPhysicsDef);
   mEvent->setGenHadronFlavour(GenHadronFlavour);
   mEvent->setPFMET(mPFMet);
   mEvent->setL1Obj(mL1Objects);
