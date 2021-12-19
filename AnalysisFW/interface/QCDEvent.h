@@ -7,11 +7,11 @@
 #include "SMPJ/AnalysisFW/interface/QCDMET.h"
 #include "SMPJ/AnalysisFW/interface/QCDCaloJet.h"
 #include "SMPJ/AnalysisFW/interface/QCDPFJet.h"
-//#include "SMPJ/AnalysisFW/interface/MyElectron.h"
-//#include "SMPJ/AnalysisFW/interface/MyMuon.h"
 #include "SMPJ/AnalysisFW/interface/QCDEventHdr.h"
 #include "DataFormats/JetReco/interface/Jet.h"
 #include <vector>
+
+using std::vector;
 
 class QCDEvent
 {
@@ -22,116 +22,82 @@ class QCDEvent
       //------------ Destructor -------------------------------
       ~QCDEvent();
       //------------ Set methods ------------------------------
-      void setCaloMET(const QCDMET& fCaloMET)                     {CaloMet_ = fCaloMET;}
-      void setPFMET(const QCDMET& fPFMET)                         {PFMet_ = fPFMET;}
-      void setMvaMET(const QCDMET& fMvaMET)                         {MvaMet_ = fMvaMET;}
+      void setPFMET(const QCDMET& fPFMET,const QCDMET& fPFMETt0, const QCDMET& fPFMETt0t1) {
+        PFMet_ = fPFMET;
+        PFMetT0_ = fPFMETt0;
+        PFMetT0T1_ = fPFMETt0t1;
+      }
       void setEvtHdr(const QCDEventHdr& fEvtHdr)                  {EvtHdr_ = fEvtHdr;}
-      //void setCaloJets(const std::vector<QCDCaloJet>& fCaloJets);
-      //void setPFJets(const std::vector<QCDPFJet>& fPFJets);
-      void setPFJetsCHS(const std::vector<QCDPFJet>& fPFJetsCHS);
-      //void setElectrons(const std::vector<MyElectron>& fElectron);
-      //void setMuons(const std::vector<MyMuon>& fMuon);
+      void setPFJetsCHS(const vector<QCDPFJet>& fPFJetsCHS);
 
-      //void setFatJets(const std::vector<QCDJet>& fFatJets);
-      void setGenJets(const std::vector<LorentzVector>& fGenJets);
-      void setL1Obj(const std::vector<std::vector<LorentzVector> >& fL1Obj);
-      void setHLTObj(const std::vector<std::vector<LorentzVector> >& fHLTObj);
-      void setFilterId(const std::vector<std::vector<int> >& filterIdList) {filterIdList_ = filterIdList;}
-      void setPrescales(const std::vector<int>& fPreL1, const std::vector<int>& fPreHLT) {L1Prescale_ = fPreL1; HLTPrescale_ = fPreHLT;}
-      void setTrigDecision(const std::vector<int>& fTrigDecision) {TriggerDecision_ = fTrigDecision;}
-      void setTrigPathList(const std::vector<std::string>& trigPathList) {triggerList_ = trigPathList;}
+      void setGenJets(const vector<LorentzVector>& fGenJets);
+      void setL1Obj(const vector<vector<LorentzVector> >& fL1Obj);
+      void setHLTObj(const vector<vector<LorentzVector> >& fHLTObj);
+      void setPrescales(const vector<int>& fPreL1, const vector<int>& fPreHLT) {L1Prescale_ = fPreL1; HLTPrescale_ = fPreHLT;}
+      void setTrigDecision(const vector<int>& fTrigDecision) {TriggerDecision_ = fTrigDecision;}
+      void setFltDecision(const vector<int>& fFltDecision) {FilterDecision_ = fFltDecision;}
 
-      void setGenFlavour(const std::vector<float> GenFlavour){ genFlavour_= GenFlavour; }
-      void setGenHadronFlavour(const std::vector<float> GenFlavourHadron){ genFlavourHadron_= GenFlavourHadron; }
+      void setGenFlavour(          const vector<int>& GenFlavour) {                genFlavour_= GenFlavour;}
+      void setGenFlavourHadron(    const vector<int>& GenFlavourHadron) {          genFlavourHadron_= GenFlavourHadron;}
+      void setGenFlavourPhysicsDef(const vector<int>& GenPartonFlavourPhysicsDef) {genFlavourPartonPhysicsDef_= GenPartonFlavourPhysicsDef;}
+      void setGenBPt(              const vector<float>& fGenBPt) {                 genBPt_ = fGenBPt; }
 
       //------------ Get methods -------------------------------
       unsigned int nTriggers()                         const {return TriggerDecision_.size();}
       unsigned int nL1Obj(int i)                       const {return L1Obj_[i].size();}
       unsigned int nHLTObj(int i)                      const {return HLTObj_[i].size();}
-      //unsigned int nPFJets()                           const {return PFJets_.size();}
       unsigned int nPFJetsCHS()                        const {return PFJetsCHS_.size();}
-      //unsigned int nFatJets()                          const {return FatJets_.size();}
-      //unsigned int nCaloJets()                         const {return CaloJets_.size();}
       unsigned int nGenJets()                          const {return GenJets_.size();}
-      int nGoodJets(int unc, int id, float ymax, float ptmin, std::vector<QCDJet> jets);
+      int nGoodJets(int unc, int id, float ymax, float ptmin, vector<QCDJet> jets);
       int fired(int i)                                 const {return TriggerDecision_[i];}
       int preL1(int i)                                 const {return L1Prescale_[i];}
       int preHLT(int i)                                const {return HLTPrescale_[i];}
+
+      int GenJetFlavour(int i)                         const {return genFlavour_[i];}
+      int GenHadronJetFlavour(int i)                   const {return genFlavourHadron_[i];}
+      int GenPartonPhysicsDefJetFlavour(int i)         const {return genFlavourPartonPhysicsDef_[i];}
+
       float pfmjj();
-      //unsigned int nMuons()                           const {return mMuon_.size();}
-      //unsigned int nEelctrons()                           const {return mElectron_.size();}
-
-      float GenJetFlavour(int i)                       const {return genFlavour_[i];}
-      float GenHadronJetFlavour(int i)                       const {return genFlavourHadron_[i];}
-
-      float calomjj();
       float genmjj();
       float pfchsmjjcor(int unc);
       float pfchsmjjcor(int unc,int src);
-      //float pfmjjcor(int unc);
-      //float pfmjjcor(int unc,int src);
-      //float fatmjjcor(int unc);
-      //float calomjjcor(int unc);
       float pfmjjgen();
-      //float calomjjgen();
-      const QCDMET&        calomet()                   const {return CaloMet_;}
       const QCDMET&        pfmet()                     const {return PFMet_;}
-      const QCDMET&        mvamet()                     const {return MvaMet_;}
       const LorentzVector& hltobj(int itrig, int iobj) const {return (HLTObj_[itrig])[iobj];}
       const LorentzVector& l1obj(int itrig, int iobj)  const {return (L1Obj_[itrig])[iobj];}
       const LorentzVector& genjet(int i)               const {return GenJets_[i];}
-      //const QCDPFJet&      pfjet(int i)                const {return PFJets_[i];}
       const QCDPFJet&      pfjetchs(int i)             const {return PFJetsCHS_[i];}
-      //const QCDJet&        fatjet(int i)               const {return FatJets_[i];}
-      //const QCDCaloJet&    calojet(int i)              const {return CaloJets_[i];}
       const QCDEventHdr&   evtHdr()                    const {return EvtHdr_;}
 
-      //const MyMuon& muon(int i) const {return mMuon_[i];}
-      //const MyElectron& electron(int i) const {return mElectron_[i];}
-
-      const std::vector<std::vector<LorentzVector>>& HLTObj() const {return HLTObj_;}
-      const std::vector<std::string>& trigPathList() const {return triggerList_;}
-      const std::vector<std::vector<int>>& filterIdList() const {return filterIdList_;}
-      const std::vector<LorentzVector>& hltObjsForPath(int i) const {return HLTObj_[i];}
-      const std::vector<int>& filterIdsForPath(int i) const {return filterIdList_[i];}
+      const vector<vector<LorentzVector>>& HLTObj() const {return HLTObj_;}
+      const vector<LorentzVector>& hltObjsForPath(int i) const {return HLTObj_[i];}
 
     private:
-      std::vector<std::vector<int> > filterIdList_;
-
       //---- event header (contains all the event info) --------------
       QCDEventHdr                              EvtHdr_;
-      //---- CALO met object -----------------------------------------
-      QCDMET                                   CaloMet_;
       //---- PF met object -------------------------------------------
-      QCDMET                                   PFMet_;
-      QCDMET                                   MvaMet_;
+      QCDMET                                   PFMet_; // T1, implicit
+      QCDMET                                   PFMetT0_;
+      QCDMET                                   PFMetT0T1_;
       //---- trigger decision vector ---------------------------------
-      std::vector<int>                         TriggerDecision_;
-      std::vector<std::string>                 triggerList_;
+      vector<int>                         TriggerDecision_;
+      //---- filter decision vector ---------------------------------
+      vector<int>                         FilterDecision_;
       //---- L1 prescale vector --------------------------------------
-      std::vector<int>                         L1Prescale_;
+      vector<int>                         L1Prescale_;
       //---- HLT prescale vector -------------------------------------
-      std::vector<int>                         HLTPrescale_;
+      vector<int>                         HLTPrescale_;
       //---- HLT objects ---------------------------------------------
-      std::vector<std::vector<LorentzVector> > HLTObj_;
+      vector<vector<LorentzVector> > HLTObj_;
       //---- L1 objects ----------------------------------------------
-      std::vector<std::vector<LorentzVector> > L1Obj_;
+      vector<vector<LorentzVector> > L1Obj_;
       //---- Genjets -------------------------------------------------
-      std::vector<LorentzVector>               GenJets_;
-      //---- CaloJets ------------------------------------------------
-      //std::vector<QCDCaloJet>                  CaloJets_;
-      //---- PFJets --------------------------------------------------
-      //std::vector<QCDPFJet>                    PFJets_;
+      vector<LorentzVector>               GenJets_;
       //---- PFJetsCHS -----------------------------------------------
-      std::vector<QCDPFJet>                    PFJetsCHS_;
-      //---- FatJets -------------------------------------------------
-      //std::vector<QCDJet>                      FatJets_;
-      std::vector<float>  genFlavour_;
-      std::vector<float>  genFlavourHadron_;
-
-      //MyMuons
-      //std::vector<MyMuon> mMuon_;
-      //std::vector<MyElectron> mElectron_;
-
+      vector<QCDPFJet>                    PFJetsCHS_;
+      vector<int>  genFlavour_;
+      vector<int>  genFlavourHadron_;
+      vector<int>  genFlavourPartonPhysicsDef_;
+      vector<float> genBPt_;
 };
 #endif

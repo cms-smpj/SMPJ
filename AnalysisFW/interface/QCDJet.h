@@ -15,22 +15,20 @@ class QCDJet
      ~QCDJet() {}
      //------------ Sett methods -----------------------------
   //   void clear() {pfParticles_.clear();}
-     void setP4(LorentzVector fP4) {P4_ = fP4;}
-     void setGen(LorentzVector fP4, float fgenR) {genP4_ = fP4;genR_ = fgenR;}
-     void setCor(float fCor)                     {cor_  = fCor;} 
-     void setUnc(float fUnc)                     {unc_  = fUnc;} 
-     void setUncSrc(std::vector<float> fUncSrc)  {uncSrc_ = fUncSrc;}
-     void setJecLabels(std::vector<double> fJecLabels) {jecLabels_ = fJecLabels;}
-     void setArea(float fArea)                   {area_ = fArea;}
-     void setLooseID(bool fLooseID)              {looseID_ = fLooseID;} 
-     void setTightID(bool fTightID)              {tightID_ = fTightID;}
+     void setP4(LorentzVector fP4)               { P4_ = fP4; }
+     void setGen(int fIdx, float fgenR)          { genIdx_ = fIdx; genR_ = fgenR; }
+     void setCor(float fCor)                     { cor_  = fCor; }
+     void setUnc(float fUnc)                     { unc_  = fUnc; }
+     void setUncSrc(std::vector<float> fUncSrc)  { uncSrc_ = fUncSrc; }
+     void setJecLabels(std::vector<double> fJecLabels) { jecLabels_ = fJecLabels; }
+     void setArea(float fArea)                   { area_ = fArea; }
+     void setLooseID(bool fLooseID)              { looseID_ = fLooseID; } 
+     void setTightID(bool fTightID)              { tightID_ = fTightID; }
 //     void setPFParticles(std::vector<LorentzVector> fpfFParticles) {pfParticles_ = fpfFParticles;}
      //------------ Get methods ------------------------------
      const LorentzVector& p4()    const {return P4_;}
-     const LorentzVector& genp4() const {return genP4_;}
      float pt()                   const {return P4_.pt()/cor_;}
-     float genpt()                const {return genP4_.pt();}
-     float geneta()               const {return genP4_.eta();} 
+     int genidx()                 const {return genIdx_;}
      float genR()                 const {return genR_;} 
      float ptCor()                const {return P4_.pt();}
      float e()                    const {return P4_.energy()/cor_;}
@@ -51,8 +49,8 @@ class QCDJet
    private:
      //------ jet 4-momentum vector------------------
      LorentzVector P4_;
-     //------ matched genjet 4-momentum vector-------
-     LorentzVector genP4_;
+     //------ matched genjet index-------------------
+     int genIdx_;
      //------ matching radius -----------------------
      float genR_;
      //------ jec factor ----------------------------
@@ -69,7 +67,5 @@ class QCDJet
      bool  looseID_;
      //------ tight ID flag -------------------------
      bool  tightID_;
-     //------ LorentzVector For PF PARTICLES
-  //   std::vector<LorentzVector> pfParticles_;
  };
 #endif

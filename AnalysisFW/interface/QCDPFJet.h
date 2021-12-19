@@ -9,36 +9,21 @@
 class QCDPFJet : public QCDPFJetBTag {
    public:
      //------------ Constructor ------------------------------
-     QCDPFJet() {chf_=0;nhf_=0;nemf_=0;cemf_=0;muf_=0;chm_=0;nhm_=0;phm_=0;elm_=0;mum_=0,cm_=0;
-//     pfParticles_.clear();
-     }
+     QCDPFJet() {chf_=0;nhf_=0;nemf_=0;cemf_=0;muf_=0;chm_=0;nhm_=0;phm_=0;elm_=0;mum_=0,cm_=0;}
      //------------ Destructor -------------------------------
      ~QCDPFJet() {}
      //------------ Set methods ------------------------------
      void setFrac(float fchf, float fnhf, float fnemf, float fcemf, float fmuf)  {chf_ = fchf; nhf_ = fnhf; nemf_ = fnemf; cemf_ = fcemf; muf_ = fmuf;}
      void setMulti(int fncand, int fchm, int fnhm, int fphm, int felm, int fmum, int fcm) {ncand_ = fncand; chm_ = fchm; nhm_ = fnhm; phm_ = fphm; elm_ = felm; mum_ = fmum; cm_ = fcm; }
-     void setBeta(float fbeta) {beta_ = fbeta;}
-     void setBetaStar(float fbetaStar) {betaStar_ = fbetaStar;}
+     void setBetaPrime(float fbetaPrime) {betaPrime_ = fbetaPrime;}
      void setHFFrac(float fhf_hf, float fhf_phf) {hf_hf_ = fhf_hf; hf_phf_ = fhf_phf;}
      void setHFMulti(int fhf_hm, int fhf_phm) {hf_hm_ = fhf_hm; hf_phm_ = fhf_phm;}
      void setVtxInfo(int mpuTrk, int mlvTrk, int mjtTrk) { mpuTrk_ = mpuTrk; mlvTrk_ = mlvTrk; mjtTrk_ = mjtTrk;} // Juska
      void setHO(float hof) {hof_ = hof;} // Juska
      void SetPUJetId(float pujid) { pujid_ = pujid; }
-     void SetCaloJetPt(float calojetpt) { calojetpt_ = calojetpt; }
-     void SetCaloJetEf(float calojetef) { calojetef_ = calojetef; }   
-
-    /*
-     void setPFParticles(std::vector<LorentzVector>& fpfFParticles) {
-      for(unsigned i=0; i<fpfFParticles.size(); i++)
-       {
-        pfParticles_.push_back(fpfFParticles[i]);
-      }
-     } // setPFParticles
-     */
 
      //------------ Get methods ------------------------------
-     float beta()     const {return beta_;}
-     float betaStar() const {return betaStar_;}
+     float betaPrime() const {return betaPrime_;}
      float chf()      const {return chf_;}
      float nhf()      const {return nhf_;}
      float nemf()      const {return nemf_;}
@@ -54,10 +39,6 @@ class QCDPFJet : public QCDPFJetBTag {
      int hf_hm()      const {return hf_hm_;}
      int hf_phm()     const {return hf_phm_;}
      int ncand()      const {return ncand_;}
-     float CaloJetPt() const {return calojetpt_;}
-     float CaloJetEf() const {return calojetef_;}
- //    int nParticles() const {return pfParticles_.size();}
- //    const LorentzVector& getPFParticles(int i) const {return pfParticles_[i];}
 
      int mpuTrk()     const {return mpuTrk_;} // Juska
      int mlvTrk()     const {return mlvTrk_;} //
@@ -65,7 +46,6 @@ class QCDPFJet : public QCDPFJetBTag {
      float hof()      const {return hof_;}    //
 
      float PUJetId()  const { return pujid_ ;}
-
 
    private:
      //---- charged hadron energy fraction ----
@@ -100,12 +80,8 @@ class QCDPFJet : public QCDPFJetBTag {
      int ncand_;
      // --- charged multiplicity ------
      int cm_;
-     //---- fraction of track pt coming from the signal vertex ---
-     float beta_;
-     //---- fraction of track pt NOT coming from the signal vertex ---
-     float betaStar_;
-     //----- PF Particles ----//
-//     std::vector<LorentzVector> pfParticles_;
+     //---- fraction of track pt NOT coming from the signal vertex, removed by chs ---
+     float betaPrime_;
 
      // Juska:
      int mpuTrk_; // PU-tracks in jet
@@ -114,9 +90,5 @@ class QCDPFJet : public QCDPFJetBTag {
      float hof_; // Hadronic Outer energy fraction
 
      float pujid_;
-
-     float calojetpt_;
-     float calojetef_;
-
-    };
+};
 #endif

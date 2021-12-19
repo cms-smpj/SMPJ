@@ -2,35 +2,13 @@
 //---------------------------------------------------
 QCDEvent::QCDEvent()
 {
+  HLTObj_.clear();
   L1Obj_.clear();
-  //PFJets_.clear();
   PFJetsCHS_.clear();
   GenJets_.clear();
 }
 //---------------------------------------------------
-QCDEvent::~QCDEvent()
-{
-}
-//---------------------------------------------------
-/*
-void QCDEvent::setCaloJets(const std::vector<QCDCaloJet>& fCaloJets)
-{
- CaloJets_.clear();
- for(unsigned i=0;i<fCaloJets.size();i++) {
-   CaloJets_.push_back(fCaloJets[i]);
- }
-}
-
-//---------------------------------------------------
-
-void QCDEvent::setPFJets(const std::vector<QCDPFJet>& fPFJets)
-{
-  PFJets_.clear();
-  for(unsigned i=0;i<fPFJets.size();i++) {
-    PFJets_.push_back(fPFJets[i]);
-  }
-}
-*/
+QCDEvent::~QCDEvent() {}
 //---------------------------------------------------
 void QCDEvent::setPFJetsCHS(const std::vector<QCDPFJet>& fPFJetsCHS)
 {
@@ -39,33 +17,6 @@ void QCDEvent::setPFJetsCHS(const std::vector<QCDPFJet>& fPFJetsCHS)
     PFJetsCHS_.push_back(fPFJetsCHS[i]);
   }
 }
-//---------------------------------------------------                                                                                                                    
-//
-//void QCDEvent::setElectrons(const std::vector<MyElectron>& fElectrons)
-//{
-//  mElectron_.clear();
-//  for(unsigned i=0;i<fElectrons.size();i++) {
-//    mElectron_.push_back(fElectrons[i]);
-//  }
-//}
-//---------------------------------------------------                                                                                                                    
-
-//void QCDEvent::setMuons(const std::vector<MyMuon>& fMuon)
-//{
-//  mMuon_.clear();
-//  for(unsigned i=0;i<fMuon.size();i++) {
-//    mMuon_.push_back(fMuon[i]);
-//  }
-//}
-//---------------------------------------------------
-
-//void QCDEvent::setFatJets(const std::vector<QCDJet>& fFatJets)
-//{
-//  FatJets_.clear();
-//  for(unsigned i=0;i<fFatJets.size();i++) {
-//    FatJets_.push_back(fFatJets[i]);
-//  }
-//}
 //---------------------------------------------------
 void QCDEvent::setGenJets(const std::vector<LorentzVector>& fGenJets)
 {
@@ -133,41 +84,17 @@ float QCDEvent::genmjj()
   }
 }
 //---------------------------------------------------
-/*
 float QCDEvent::pfmjj()
 {
-  if (PFJets_.size() < 2)
+  if (PFJetsCHS_.size() < 2)
     return 0.0;
   else {
-    const LorentzVector& P0 = PFJets_[0].p4();
-    const LorentzVector& P1 = PFJets_[1].p4();
+    const LorentzVector& P0 = PFJetsCHS_[0].p4();
+    const LorentzVector& P1 = PFJetsCHS_[1].p4();
     return (P0+P1).mass();
   }
 }
-
 //---------------------------------------------------
-
-float QCDEvent::pfmjjcor(int k)
-{
-  int sign(0);
-  if (PFJets_.size() < 2)
-    return 0.0;
-  else {
-    if (k>0)
-      sign = 1;
-    if (k<0)
-      sign = -1;
-    const LorentzVector& P0 = PFJets_[0].p4();
-    const LorentzVector& P1 = PFJets_[1].p4();
-    double cor0 = PFJets_[0].cor();
-    double cor1 = PFJets_[1].cor();
-    double unc0 = PFJets_[0].unc();
-    double unc1 = PFJets_[1].unc();
-    return (cor0*(1+sign*unc0)*P0+cor1*(1+sign*unc1)*P1).mass();
-  }
-}
-*/
-//--------------------------------------------------
 float QCDEvent::pfchsmjjcor(int k)
 {
   int sign(0);
@@ -185,30 +112,7 @@ float QCDEvent::pfchsmjjcor(int k)
     return ((1+sign*unc0)*P0+(1+sign*unc1)*P1).mass();
   }
 }
-
 //---------------------------------------------------
-/*
-float QCDEvent::pfmjjcor(int k,int src)
-{
-  int sign(0);
-  if (PFJets_.size() < 2)
-    return 0.0;
-  else {
-    if (k>0)
-      sign = 1;
-    if (k<0)
-      sign = -1;
-    const LorentzVector& P0 = PFJets_[0].p4();
-    const LorentzVector& P1 = PFJets_[1].p4();
-    double cor0 = PFJets_[0].cor();
-    double cor1 = PFJets_[1].cor();
-    double unc0 = PFJets_[0].uncSrc(src);
-    double unc1 = PFJets_[1].uncSrc(src);
-    return (cor0*(1+sign*unc0)*P0+cor1*(1+sign*unc1)*P1).mass();
-  }
-}
-*/
-//--------------------------------------------------
 float QCDEvent::pfchsmjjcor(int k,int src)
 {
   int sign(0);
@@ -226,83 +130,3 @@ float QCDEvent::pfchsmjjcor(int k,int src)
     return ((1+sign*unc0)*P0+(1+sign*unc1)*P1).mass();
   }
 }
-
-
-////---------------------------------------------------
-//float QCDEvent::fatmjjcor(int k)
-//{
-//  int sign(0);
-//  if (FatJets_.size() < 2)
-//    return 0.0;
-//  else {
-//    if (k>0)
-//      sign = 1;
-//    if (k<0)
-//      sign = -1;
-//    const LorentzVector& P0 = FatJets_[0].p4();
-//    const LorentzVector& P1 = FatJets_[1].p4();
-//    double cor0 = FatJets_[0].cor();
-//    double cor1 = FatJets_[1].cor();
-//    double unc0 = FatJets_[0].unc();
-//    double unc1 = FatJets_[1].unc();
-//    return (cor0*(1+sign*unc0)*P0+cor1*(1+sign*unc1)*P1).mass();
-//  }
-//}
-//---------------------------------------------------
-//
-/*
-float QCDEvent::calomjj()
-{
- if (CaloJets_.size() < 2)
-   return 0.0;
- else {
-   const LorentzVector& P0 = CaloJets_[0].p4();
-   const LorentzVector& P1 = CaloJets_[1].p4();
-   return (P0+P1).mass();
- }
-}
-////---------------------------------------------------
-
-float QCDEvent::calomjjcor(int k)
-{
- int sign(0);
- if (CaloJets_.size() < 2)
-   return 0.0;
- else {
-   if (k>0)
-     sign = 1;
-   if (k<0)
-     sign = -1;
-   const LorentzVector& P0 = CaloJets_[0].p4();
-   const LorentzVector& P1 = CaloJets_[1].p4();
-   double cor0 = CaloJets_[0].cor();
-   double cor1 = CaloJets_[1].cor();
-   double unc0 = CaloJets_[0].unc();
-   double unc1 = CaloJets_[1].unc();
-   return (cor0*(1+sign*unc0)*P0+cor1*(1+sign*unc1)*P1).mass();
- }
-}
-//---------------------------------------------------
-float QCDEvent::pfmjjgen()
-{
-  if (PFJetsCHS_.size() < 2)
-    return 0.0;
-  else {
-    const LorentzVector& P0 = PFJetsCHS_[0].genp4();
-    const LorentzVector& P1 = PFJetsCHS_[1].genp4();
-    return (P0+P1).mass();
-  }
-}
-//---------------------------------------------------
-float QCDEvent::calomjjgen()
-{
- if (CaloJets_.size() < 2)
-   return 0.0;
- else {
-   const LorentzVector& P0 = CaloJets_[0].genp4();
-   const LorentzVector& P1 = CaloJets_[1].genp4();
-   return (P0+P1).mass();
- }
-}
-*/
-

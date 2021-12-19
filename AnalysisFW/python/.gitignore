@@ -1,0 +1,6 @@
+*.pyc
+*swp
+cfg/*
+*.log
+*.root
+runs*
