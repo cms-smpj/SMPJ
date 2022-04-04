@@ -7,16 +7,16 @@ import FWCore.ParameterSet.Config as cms
 # Ultra Legacy summary: https://twiki.cern.ch/twiki/bin/view/CMS/PdmVRun2LegacyAnalysisSummaryTable
 GTags = {
   '16' : {
-    'dt' : "106X_dataRun2_v32",
-    'mc' : "106X_mcRun2_asymptotic_v15",
-    'mcPreVFP' : "106X_mcRun2_asymptotic_preVFP_v9"
+    'dt' : "106X_dataRun2_v35",
+    'mc' : "106X_mcRun2_asymptotic_v17",
+    'mcPreVFP' : "106X_mcRun2_asymptotic_preVFP_v11"
   },
   '17' : {
-    'dt' : "106X_dataRun2_v32",
-    'mc' : "106X_mc2017_realistic_v8"
+    'dt' : "106X_dataRun2_v35",
+    'mc' : "106X_mc2017_realistic_v9"
   },
   '18' : {
-    'dt' : "106X_dataRun2_v32", 
-    'mc' : "106X_upgrade2018_realistic_v15_L1v1"
+    'dt' : "106X_dataRun2_v35", 
+    'mc' : "106X_upgrade2018_realistic_v16_L1v1"
   }
 }
