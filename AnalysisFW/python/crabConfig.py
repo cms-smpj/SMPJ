@@ -91,41 +91,39 @@ if __name__ == '__main__':
     if RunYear=='16':
       # CMSSW 10_6_8_patch1: Era == Be/Bl/C/D/E/Fe/Fl/G/H
       config.Data.lumiMask = '/afs/cern.ch/user/h/hsiikone/work/certificates/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt'
+      Ver = '2'
+      Campaign = ''
+
+      # Era specific
       if Era=='Be':
-        Campaign = '21Feb2020_ver1_UL2016'
+        Campaign += 'ver1_'
         Era = 'B'
       elif Era=='Bl':
-        Campaign = '21Feb2020_ver2_UL2016'
+        Campaign += 'ver2_'
         Era = 'B'
-      else:
-        Campaign = '21Feb2020_UL2016'
+      elif Era=='Fe':
+        Era = 'F'
+      
       # HIP issue mitigation
-      if Era=='B' or Era=='C' or Era=='D' or Era=='E' or Era=='Fe':
-        Campaign += '_HIPM'
-      # Late F produced without HIP mitigation
-      if Era=='Fe': Era = 'F'
-      if Era=='Fl': Era = 'F'
+      if Era=='B' or Era=='C' or Era=='D' or Era=='E' or Era=='F':
+        Campaign += 'HIPM_'
+      elif Era=='Fl':
+        Era = 'F'
+
+      Campaign += 'UL2016_MiniAODv2'
     elif RunYear=='17':
       # CMSSW 10_6_2: Era == B/C/D/E/F
       config.Data.lumiMask = '/afs/cern.ch/user/h/hsiikone/work/certificates/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSONmod.txt'
-      Campaign = '09Aug2019_UL2017'
+      Campaign = 'UL2017_MiniAODv2'
       if Era=='F': config.Data.unitsPerJob = 80
     elif RunYear=='18':
       # CMSSW 10_6_4_patch1: Era == A/B/C/D
       config.Data.lumiMask = '/afs/cern.ch/user/h/hsiikone/work/certificates/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'
-      Ver = '2'
-      Campaign = '12Nov2019_UL2018'
+      Campaign = 'UL2018_MiniAODv2'
       if Era=='A':   config.Data.unitsPerJob = 100
       elif Era=='D': config.Data.unitsPerJob = 160
       if Mode=='ak4':
-        if Era=='C':
-          Campaign += '_rsb'
-          Ver = '1'
-        if Era=='D': Ver = '4'
-      elif Mode=='zb':
-        if Era=='C' or Era=='D':
-          Campaign += '_rsb'
-          Ver = '1'
+        if Era=='D': Ver = '2'
     config.Data.inputDataset = DTLoc+'/Run20'+RunYear+Era+'-'+Campaign+'-v'+Ver+'/MINIAOD'
   else:
     if not ExtMode:
@@ -146,10 +144,10 @@ if __name__ == '__main__':
         ##### Neutrino Gun
         if DoPreVFP:
           config.General.requestName = 'QCD16'+Tag+'_SingleNu_S19UL16_mcr2a_PreVFP_v8_e3_2'
-          config.Data.inputDataset = '/SingleNeutrino/RunIISummer19UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8_ext3-v2/MINIAODSIM'
+          config.Data.inputDataset = ''
         else:
-          config.General.requestName = 'QCD16'+Tag+'_SingleNu_S19UL16_mcr2a_v13_2'
-          config.Data.inputDataset = '/SingleNeutrino/RunIISummer19UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'
+          config.General.requestName = 'QCD16'+Tag+'_SingleNu_S19UL16_mcr2a_v17_2'
+          config.Data.inputDataset = '/SingleNeutrino/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v2/MINIAODSIM'
 
       elif MCType=='hw':
         ##### Herwig7 Flat
@@ -164,18 +162,16 @@ if __name__ == '__main__':
         ##### Pythia 8 Flat
         if DoPreVFP:
           if not ExtMode:
-            config.General.requestName = 'QCD16'+Tag+'_CP5_15to7k_S19UL16_mcr2a_PreVFP_v8_e1_2'
-            config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer19UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8_ext1-v2/MINIAODSIM'
+            config.General.requestName = 'QCD16'+Tag+'_CP5_15to7k_S19UL16_mcr2a_PreVFP_v11_1'
+            config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM'
           else:
-            config.General.requestName = 'QCD16'+Tag+'_CP5_15to7k_S19UL16_mcr2a_PreVFP_v8_e1_2'
-            config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/RunIISummer19UL16MiniAODAPV-106X_mcRun2_asymptotic_preVFP_v8_ext1-v2/MINIAODSIM'
+            Good = False
         else:
           if not ExtMode:
-            config.General.requestName = 'QCD16'+Tag+'_CP5_15to7k_S19UL16_mcr2a_v13_2'
-            config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer19UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'
+            config.General.requestName = 'QCD16'+Tag+'_CP5_15to7k_S19UL16_mcr2a_v17_1'
+            config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM'
           else:
-            config.General.requestName = 'QCD16'+Tag+'_CP5_15to7k_S19UL16_mcr2a_v13_2'
-            config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/RunIISummer19UL16MiniAOD-106X_mcRun2_asymptotic_v13-v2/MINIAODSIM'
+            Good = False
 
       elif MCType=='pylong':
         ##### Pythia 8 Pthat slices
@@ -215,19 +211,13 @@ if __name__ == '__main__':
           Good = False
 
       elif MCType=='py':
-        #config.General.requestName = 'QCD17'+Tag+'_CP5_15to7k_S19UL17_mc17r_v7_HSv1'
-        #config.Data.inputDataset = '/RelValQCD_FlatPt_15_3000HS_13/CMSSW_10_6_14-PU25ns_106X_mc2017_realistic_v7_HS-v1/MINIAODSIM'
-        config.General.requestName = 'QCD17'+Tag+'_CP5_15to7k_S19UL17_mc17r_v7_HSv1_BugFix'
-        config.Data.inputDataset = '/RelValQCD_FlatPt_15_3000HS_13/CMSSW_10_6_14_Pyt8240BugFix-PU25ns_106X_mc2017_realistic_v7_HS-v1/MINIAODSIM'
-
         ##### Pythia 8 Flat
-        #config.General.requestName = 'QCD17'+Tag+'_CP5_15to7k_S19UL17_mc17r_v6_2'+TagTag
+        config.General.requestName = 'QCD17'+Tag+'_CP5_15to7k_S19UL17_mc17r_v9_2'+TagTag
 
-        #if not ExtMode:
-        #  config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer19UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM'
-        #else:
-        #  config.General.requestName += '_e2'
-        #  config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/RunIISummer19UL17MiniAOD-106X_mc2017_realistic_v6_ext2-v2/MINIAODSIM'
+        if not ExtMode:
+          config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM'
+        else:
+          Good = False
 
       elif MCType=='pylong':
         ##### Pythia 8 Pthat slices
@@ -270,17 +260,12 @@ if __name__ == '__main__':
 
       elif MCType=='py':
         # Pythia 8 Flat
-        config.General.requestName = 'QCD18'+Tag+'_CP5_15to7k_S19UL18_mc18r_v11_L1v1_v2'+TagTag
+        config.General.requestName = 'QCD18'+Tag+'_CP5_15to7k_S19UL18_mc18r_v16_L1v1_v2'+TagTag
         
         if not ExtMode:
-          config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer19UL18MiniAOD-FlatPU0to70_106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'
-          #config.General.requestName += '_HEM' 
-          #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer19UL18MiniAOD-FlatPU0to70_UL18HEMreReco_106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'
+          config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM'
         else:
-          config.General.requestName += '_e' 
-          config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/RunIISummer19UL18MiniAOD-FlatPU0to70_106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'
-          #config.General.requestName += '_HEM' 
-          #config.Data.inputDataset = '/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/RunIISummer19UL18MiniAOD-FlatPU0to70_UL18HEMreReco_106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM'
+          Good = False
 
       elif MCType=='pylong':
         ##### Pythia 8 Pthat slices

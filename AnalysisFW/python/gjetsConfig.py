@@ -61,7 +61,7 @@ if __name__ == '__main__':
       add = "PreVFP" if IsEarly else ""
     elif RunYear=='18': split = "" if IsEarly else "_HEM"
     config.JobType.psetName = 'cfg/genj'+RunYear+MCType+add+'.py'
-    config.General.requestName = 'PartsRun'+RunYear+MCType+split+Tag
+    config.General.requestName = 'GJetsRun'+RunYear+MCType+split+Tag
     if RunYear=='16':
       if MCType=='nu':
         Good=False
